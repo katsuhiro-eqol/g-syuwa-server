@@ -14,7 +14,7 @@ app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-	res.send('Running');
+	res.send('Running yarn');
 });
 
 app.get('/currentUsers', (req, res) => {
