@@ -23,17 +23,17 @@ app.get('/currentUsers', (req, res) => {
 
 let currentUsers = [];
 io.on("connection", (socket) => {
-    console.log('connected' + socket.id);
 	socket.emit("me", socket.id);
 
 	socket.on("disconnect", () => {
         socket.emit("destroyPeer");
-
         currentUsers = currentUsers.filter((item) => item.socketId !== socket.id);
+        console.log(currentUsers);
 	});
 
     socket.on('sharingUserInfo', (data) => {
         currentUsers.push(data);
+        console.log(currentUsers);
     });
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
