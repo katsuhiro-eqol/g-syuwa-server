@@ -11,17 +11,24 @@ const io = require("socket.io")(server, {
 
 app.use(cors());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.get('/', (req, res) => {
 	res.send('Running yarn');
 });
 
+let currentUsers = []; //[{socketId: me, userId: userId, role: role}]
+
 app.get('/currentUsers', (req, res) => {
 	res.json(currentUsers);
 });
 
-let currentUsers = []; //[{socketId: me, userId: userId, role: role}]
+app.get('/currentUsers/initialize', (req, res) => {
+	currentUsers = [];
+	res.json(currentUsers);
+});
+
+
 let offeringConnections = {}; //add 1/31 どれか１つacceptされたらそれ以外接続できなくするために準備する配列[{site: socketId, interpreters:[socketId(interpreters)]}]
 io.on("connection", (socket) => {
     console.log('connected' + socket.id);
