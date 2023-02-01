@@ -1,14 +1,6 @@
 const app = require("express")();
-//const server = require("https").createServer(app);
+const server = require("http").createServer(app);
 const cors = require("cors");
-
-var fs = require('fs');
-var https = require('https');
-var options = {
-  key: fs.readFileSync('./localhost-key.pem'),
-  cert: fs.readFileSync('./localhost.pem')
-};
-var server = https.createServer(options, app);
 
 const io = require("socket.io")(server, {
 	cors: {
@@ -19,10 +11,10 @@ const io = require("socket.io")(server, {
 
 app.use(cors());
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-	res.send('Running');
+	res.send('Running yarn');
 });
 
 app.get('/currentUsers', (req, res) => {
