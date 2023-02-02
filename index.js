@@ -47,6 +47,7 @@ io.on("connection", (socket) => {
 		if (!currentUsers.includes(data)){
 			currentUsers.push(data);
 		}
+	console.log(currentUsers);
     });
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
@@ -56,6 +57,7 @@ io.on("connection", (socket) => {
 	//add 1/31 offerした時のconnection.どれか１つacceptされたらそれ以外接続できなくするための配列
 	socket.on("offeredInfo", (data) => {
 		offeringConnections[data.site] = data.interpreters;
+		console.log(offeringConnections);
 	});
 
 	socket.on("answerCall", (data) => {
