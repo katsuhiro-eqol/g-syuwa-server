@@ -44,7 +44,9 @@ io.on("connection", (socket) => {
 	});
 
     socket.on('sharingUserInfo', (data) => {
-        currentUsers.push(data);
+		if (!currentUsers.includes(data)){
+			currentUsers.push(data);
+		}
     });
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
