@@ -25,7 +25,7 @@ app.get('/currentUsers', (req, res) => {
 
 app.get('/currentUsers/initialize', (req, res) => {
 	currentUsers = [];
-	res.json(currentUsers);
+	res.send('currentUsers initialized');
 });
 
 
@@ -36,18 +36,18 @@ io.on("connection", (socket) => {
 
 	socket.on("disconnect", () => {
         socket.emit("destroyPeer");
-        currentUsers = currentUsers.filter((item) => item.socketId !== socket.id);
+        currentUsers.filter((item) => item.socketId !== socket.id);
 		//add 1/31 siteからのdisconnectでofferingConnectionから削除する。
 		if (socket.id in offeringConnections){
 			delete offeringConnections[socket.id];
+			console.log('delete: ', socket.id);
 		}
 	});
 
     socket.on('sharingUserInfo', (data) => {
-		if (!currentUsers.includes(data)){
-			currentUsers.push(data);
-		}
-	console.log(currentUsers);
+		currentUsers.filter((item) => item.socketId !== data.socketId);
+		currentUsers.push(data);
+		console.log(currentUsers);
     });
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
