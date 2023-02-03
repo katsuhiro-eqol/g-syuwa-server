@@ -28,26 +28,33 @@ app.get('/currentUsers/initialize', (req, res) => {
 	res.send('currentUsers initialized');
 });
 
-
 let offeringConnections = {}; //add 1/31 どれか１つacceptされたらそれ以外接続できなくするために準備する配列[{site: socketId, interpreters:[socketId(interpreters)]}]
 io.on("connection", (socket) => {
     console.log('connected' + socket.id);
 	socket.emit("me", socket.id);
 
 	socket.on("disconnect", () => {
+		console.log('disconnected' + socket.id);
         socket.emit("destroyPeer");
-        currentUsers.filter((item) => item.socketId !== socket.id);
+        currentUsers = currentUsers.filter((item) => item.socketId !== socket.id);
+		console.log('currentUsers: ',currentUsers);
 		//add 1/31 siteからのdisconnectでofferingConnectionから削除する。
 		if (socket.id in offeringConnections){
 			delete offeringConnections[socket.id];
-			console.log('delete: ', socket.id);
 		}
 	});
 
     socket.on('sharingUserInfo', (data) => {
-		currentUsers.filter((item) => item.socketId !== data.socketId);
-		currentUsers.push(data);
-		console.log(currentUsers);
+		const isRegisteredSocketId = currentUsers.includes((item) => {
+			return item.socketId === data.socketId;
+		})
+		if (isRegisteredSocketId){
+			console.log('currentUser registration duplicated')
+		} else {
+			currentUsers.push(data);
+			console.log('new currentUser')
+			console.log(currentUsers);
+		}
     });
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
@@ -57,7 +64,6 @@ io.on("connection", (socket) => {
 	//add 1/31 offerした時のconnection.どれか１つacceptされたらそれ以外接続できなくするための配列
 	socket.on("offeredInfo", (data) => {
 		offeringConnections[data.site] = data.interpreters;
-		console.log(offeringConnections);
 	});
 
 	socket.on("answerCall", (data) => {
