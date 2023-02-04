@@ -28,7 +28,7 @@ app.get('/currentUsers/initialize', (req, res) => {
 	res.send('currentUsers initialized');
 });
 
-let offeringConnections = {}; //add 1/31 どれか１つacceptされたらそれ以外接続できなくするために準備する配列[{site: socketId, interpreters:[socketId(interpreters)]}]
+let offeringConnections = {};
 io.on("connection", (socket) => {
     console.log('connected' + socket.id);
 	socket.emit("me", socket.id);
@@ -38,22 +38,26 @@ io.on("connection", (socket) => {
         socket.emit("destroyPeer");
         currentUsers = currentUsers.filter((item) => item.socketId !== socket.id);
 		console.log('currentUsers: ',currentUsers);
-		//add 1/31 siteからのdisconnectでofferingConnectionから削除する。
+		//add 2/3 site/deafがdisconnectしたとき、offer先をdisusedする
+		if (socket.id in offeringConnections){
+		const interpreters = offeringConnections[socket.id];
+			interpreters.map(interpreter => {
+				io.to(interpreter).emit("disusedConnection", socket.id);
+				console.log('disused', interpreter);
+			})
+		}
 		if (socket.id in offeringConnections){
 			delete offeringConnections[socket.id];
 		}
 	});
 
     socket.on('sharingUserInfo', (data) => {
-		const isRegisteredSocketId = currentUsers.includes((item) => {
-			return item.socketId === data.socketId;
-		})
-		if (isRegisteredSocketId){
-			console.log('currentUser registration duplicated')
-		} else {
+		//change 2/4
+		if (!currentUsers.some(
+			b => b.socketId === data.socketId
+		)){
 			currentUsers.push(data);
-			console.log('new currentUser')
-			console.log(currentUsers);
+			console.log('currentUser', currentUsers)
 		}
     });
 
@@ -61,14 +65,12 @@ io.on("connection", (socket) => {
 		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
 	});
 
-	//add 1/31 offerした時のconnection.どれか１つacceptされたらそれ以外接続できなくするための配列
 	socket.on("offeredInfo", (data) => {
 		offeringConnections[data.site] = data.interpreters;
 	});
 
 	socket.on("answerCall", (data) => {
 		io.to(data.to).emit("callAccepted", data.signal);
-		//add 1/31 data.from:interpreter, data.to:site
 		console.log(offeringConnections);
 		if (data.to in offeringConnections){
 			const interpreters = offeringConnections[data.to];
