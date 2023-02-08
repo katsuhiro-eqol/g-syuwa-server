@@ -17,8 +17,8 @@ app.get('/', (req, res) => {
 	res.send('Running yarn');
 });
 
-let currentUsers = []; //[{socketId: me, userId: userId, role: role}]
 
+let currentUsers = []; //[{socketId: me, userId: userId, role: role}]
 app.get('/currentUsers', (req, res) => {
 	res.json(currentUsers);
 });
@@ -39,6 +39,8 @@ io.on("connection", (socket) => {
         currentUsers = currentUsers.filter((item) => item.socketId !== socket.id);
 		console.log('currentUsers: ',currentUsers);
 		//add 2/3 site/deafがdisconnectしたとき、offer先をdisusedする
+		console.log(offeringConnections[socket.id])
+
 		if (socket.id in offeringConnections){
 		const interpreters = offeringConnections[socket.id];
 			interpreters.map(interpreter => {
@@ -52,7 +54,6 @@ io.on("connection", (socket) => {
 	});
 
     socket.on('sharingUserInfo', (data) => {
-		//change 2/4
 		if (!currentUsers.some(
 			b => b.socketId === data.socketId
 		)){
@@ -61,16 +62,22 @@ io.on("connection", (socket) => {
 		}
     });
 
-	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
-		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+	socket.on("callUser1", ({ userToCall, signalData, from, name, service }) => {
+		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, service });
+	});
+	socket.on("callUser2", ({ userToCall, signalData, from, name }) => {
+		io.to(userToCall).emit("callUser2", { signal: signalData, from, name });
+	});
+	socket.on("callUser3", ({ userToCall, signalData, from, name }) => {
+		io.to(userToCall).emit("callUser3", { signal: signalData, from, name });
 	});
 
 	socket.on("offeredInfo", (data) => {
 		offeringConnections[data.site] = data.interpreters;
 	});
 
-	socket.on("answerCall", (data) => {
-		io.to(data.to).emit("callAccepted", data.signal);
+	socket.on("answerCall1", (data) => {
+		io.to(data.to).emit("callAccepted1", data.signal);
 		console.log(offeringConnections);
 		if (data.to in offeringConnections){
 			const interpreters = offeringConnections[data.to];
@@ -84,9 +91,22 @@ io.on("connection", (socket) => {
 		}
 	});
 
-    socket.on("callEnded", (data) => {
-        io.to(data).emit("callEnded", data);
-    })
+	socket.on("answerCall2", (data) => {
+		io.to(data.to).emit("callAccepted2", data.signal);
+	});
+	socket.on("answerCall3", (data) => {
+		io.to(data.to).emit("callAccepted3", data.signal);
+	});
+
+    socket.on("callEnded1", (data) => {
+        io.to(data).emit("callEnded1", data);
+    });
+    socket.on("callEnded2", (data) => {
+        io.to(data).emit("callEnded2", data);
+    });
+    socket.on("callEnded3", (data) => {
+        io.to(data).emit("callEnded3", data);
+    });
 });
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
