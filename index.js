@@ -17,7 +17,6 @@ app.get('/', (req, res) => {
 	res.send('Running yarn');
 });
 
-
 let currentUsers = []; //[{socketId: me, userId: userId, role: role}]
 app.get('/currentUsers', (req, res) => {
 	res.json(currentUsers);
@@ -54,6 +53,7 @@ io.on("connection", (socket) => {
 	});
 
     socket.on('sharingUserInfo', (data) => {
+		//change 2/4
 		if (!currentUsers.some(
 			b => b.socketId === data.socketId
 		)){
