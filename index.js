@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
         currentUsers = currentUsers.filter((item) => item.socketId !== socket.id);
 		console.log('currentUsers: ',currentUsers);
 		//add 2/3 site/deafがdisconnectしたとき、offer先をdisusedする
-		console.log(offeringConnections[socket.id])
+		console.log('offeringConnections[socket.id]: ', offeringConnections[socket.id])
 
 		if (socket.id in offeringConnections){
 		const interpreters = offeringConnections[socket.id];
@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
 
 	socket.on("answerCall1", (data) => {
 		io.to(data.to).emit("callAccepted1", data.signal);
-		console.log(offeringConnections);
+		console.log('offeringConnections', offeringConnections);
 		if (data.to in offeringConnections){
 			const interpreters = offeringConnections[data.to];
 			const disusedInterpreters = interpreters.filter((item) => item !== data.from);
