@@ -107,6 +107,13 @@ io.on("connection", (socket) => {
     socket.on("callEnded3", (data) => {
         io.to(data).emit("callEnded3", data);
     });
+	//2/11
+	socket.on("startRecord", (data) => {
+		io.to(data).emit("startRecord", data);
+	});
+	socket.on("stopRecord", (data) => {
+		io.to(data).emit("stopRecord", data);
+	});
 });
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
