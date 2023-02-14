@@ -53,6 +53,8 @@ io.on("connection", (socket) => {
 	});
 
     socket.on('sharingUserInfo', (data) => {
+		//add 2/14
+		currentUsers = currentUsers.filter((item) => item.userId !== data.userId && item.role !== data.role);
 		//change 2/4
 		if (!currentUsers.some(
 			b => b.socketId === data.socketId
@@ -60,6 +62,7 @@ io.on("connection", (socket) => {
 			currentUsers.push(data);
 			console.log('currentUser', currentUsers)
 		}
+
     });
 
 	socket.on("callUser1", ({ userToCall, signalData, from, name, service }) => {
