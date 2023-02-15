@@ -54,7 +54,7 @@ io.on("connection", (socket) => {
 
     socket.on('sharingUserInfo', (data) => {
 		//add 2/14
-		currentUsers = currentUsers.filter((item) => item.userId !== data.userId && item.role !== data.role);
+		currentUsers = currentUsers.filter((item) => !(item.userId === data.userId && item.role === data.role));
 		//change 2/4
 		if (!currentUsers.some(
 			b => b.socketId === data.socketId
