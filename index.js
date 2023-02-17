@@ -65,9 +65,8 @@ io.on("connection", (socket) => {
 
     });
 
-	//roomをsiteのidとし、interpreterがjoin roomできるようにsite idを送信
-	socket.on("callUser1", ({ userToCall, signalData, from, name, service, room }) => {
-		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, service, room });
+	socket.on("callUser1", ({ userToCall, signalData, from, name, service }) => {
+		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, service });
 	});
 	socket.on("callUser2", ({ userToCall, signalData, from, name }) => {
 		io.to(userToCall).emit("callUser2", { signal: signalData, from, name });
