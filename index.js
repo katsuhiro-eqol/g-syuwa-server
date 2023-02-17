@@ -124,6 +124,7 @@ io.on("connection", (socket) => {
 		socket.join(data.room);
 		io.to(data.room).emit("enter room", data.from);
 		console.log("enter room: ", data.from);
+		console.log("roomNo: ", data.room);
 	});
 	socket.on("comment", (data) => {
 		io.to(data.room).emit("comment", data);
