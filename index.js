@@ -65,8 +65,9 @@ io.on("connection", (socket) => {
 
     });
 
+	//roomをsiteのidとし、interpreterがjoin roomできるようにsite idを送信
 	socket.on("callUser1", ({ userToCall, signalData, from, name, service }) => {
-		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, service });
+		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, service, room });
 	});
 	socket.on("callUser2", ({ userToCall, signalData, from, name }) => {
 		io.to(userToCall).emit("callUser2", { signal: signalData, from, name });
@@ -116,6 +117,16 @@ io.on("connection", (socket) => {
 	});
 	socket.on("stopRecord", (data) => {
 		io.to(data).emit("stopRecord", data);
+	});
+
+	//2/17 message
+	socket.on("joinRoom", (data) => {
+		socket.join(data.room);
+		io.to(data.room).emit("enter room", data.from);
+		console.log("enter room: ", data.from);
+	});
+	socket.on("comment", (data) => {
+		io.to(data.room).emit("comment", data);
 	});
 });
 
