@@ -126,6 +126,7 @@ io.on("connection", (socket) => {
 		console.log("roomNo: ", data.room);
 	});
 	socket.on("comment", (data) => {
+		console.log(data);
 		io.to(data.room).emit("comment", data);
 	});
 });
