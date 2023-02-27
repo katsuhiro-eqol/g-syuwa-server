@@ -129,6 +129,10 @@ io.on("connection", (socket) => {
 		console.log(data);
 		io.to(data.room).emit("comment", data);
 	});
+
+	socket.on("deafEnter", (data) =>{
+		io.to(data).emit("deafEntered");
+	})
 });
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
