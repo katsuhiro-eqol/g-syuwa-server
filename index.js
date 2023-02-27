@@ -131,7 +131,7 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on("deafEnter", (data) =>{
-		io.to(data).emit("deafEntered");
+		io.to(data.service).emit("deafEntered", data);
 	})
 });
 
