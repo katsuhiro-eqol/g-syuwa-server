@@ -133,6 +133,17 @@ io.on("connection", (socket) => {
 
 	socket.on("deafEnter", (data) =>{
 		io.to(data.service).emit("deafEntered", data);
+	});
+
+	socket.on("flipAvailability", (data) => {
+		const target = currentUsers.find(element => element.socketId === data);
+        const index = currentUsers.indexOf(target);
+        currentUsers.splice(index, 1);
+        console.log(target);
+        const avail = target['available'];
+        target['available'] = !avail;
+        currentUsers.push(target);
+        console.log(currentUsers);
 	})
 });
 
