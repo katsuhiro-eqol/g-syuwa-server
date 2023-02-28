@@ -65,8 +65,9 @@ io.on("connection", (socket) => {
 
     });
 
-	socket.on("callUser1", ({ userToCall, signalData, from, name, service }) => {
-		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, service });
+	socket.on("callUser1", ({ userToCall, signalData, from, name, deaf }) => {
+		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, deaf });
+		console.log('deaf:', deaf);
 	});
 	socket.on("callUser2", ({ userToCall, signalData, from, name }) => {
 		io.to(userToCall).emit("callUser2", { signal: signalData, from, name });
