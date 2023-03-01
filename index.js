@@ -85,11 +85,11 @@ io.on("connection", (socket) => {
 		console.log('offeringConnections', offeringConnections);
 		if (data.to in offeringConnections){
 			const interpreters = offeringConnections[data.to];
-			const disusedInterpreters = interpreters.filter((item) => item !== data.from);
+			const disusedInterpreters = interpreters.filter((item) => item.socketId !== data.from);
 			if (disusedInterpreters.length !== 0){
 				disusedInterpreters.map(interpreter => {
-					io.to(interpreter).emit("disusedConnection", data.to);
-					console.log('disused', interpreter);
+					io.to(interpreter.socketId).emit("disusedConnection", data.to);
+					console.log('disused', interpreter.socketId);
 				})
 			}
 		}
