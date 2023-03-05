@@ -65,9 +65,19 @@ io.on("connection", (socket) => {
 
     });
 
-	socket.on("callUser1", ({ userToCall, signalData, from, name, deaf }) => {
-		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, deaf });
-		console.log('deaf:', deaf);
+	socket.on("callUser1", ({ userToCall, signalData, from, name }) => {
+		io.to(userToCall).emit("callUser1", { signal: signalData, from, name });
+		console.log('offeringConnections', offeringConnections);
+		if (userToCall in offeringConnections){
+			const interpreters = offeringConnections[userToCall];
+			const disusedInterpreters = interpreters.filter((item) => item.socketId !== from);
+			if (disusedInterpreters.length !== 0){
+				disusedInterpreters.map(interpreter => {
+					io.to(interpreter.socketId).emit("disusedConnection", data.to);
+					console.log('disused', interpreter.socketId);
+				})
+			}
+		}
 	});
 	socket.on("callUser2", ({ userToCall, signalData, from, name }) => {
 		io.to(userToCall).emit("callUser2", { signal: signalData, from, name });
@@ -82,6 +92,7 @@ io.on("connection", (socket) => {
 
 	socket.on("answerCall1", (data) => {
 		io.to(data.to).emit("callAccepted1", data.signal);
+		/*
 		console.log('offeringConnections', offeringConnections);
 		if (data.to in offeringConnections){
 			const interpreters = offeringConnections[data.to];
@@ -93,6 +104,7 @@ io.on("connection", (socket) => {
 				})
 			}
 		}
+		*/
 	});
 
 	socket.on("answerCall2", (data) => {
@@ -135,8 +147,14 @@ io.on("connection", (socket) => {
 		io.to(data.service).emit("deafEntered", data);
 	});
 
+	//socketでInterpreterにoffer
 	socket.on("offeringInterpreter", (data) => {
-		io.to(data.socketId).emit("offeringInterpreter", data);
+		io.to(data.interpreter).emit("offeringInterpreter", data);
+	});
+
+	//一番早くacceptしたInterpreterのacceptを受領
+	socket.on("acceptOffer", (data) => {
+		io.to(data.service).emit("acceptOffer", data);
 	})
 
 	socket.on("flipAvailability", (data) => {
