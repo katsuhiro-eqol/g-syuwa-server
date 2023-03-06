@@ -135,6 +135,11 @@ io.on("connection", (socket) => {
 		io.to(data.service).emit("deafEntered", data);
 	});
 
+	//add 3/6
+	socket.on("offerInterpreter", (data) => {
+		io.to(data.interpreter).emit("offering", data)
+	})
+
 	socket.on("flipAvailability", (data) => {
 		const target = currentUsers.find(element => element.socketId === data);
         const index = currentUsers.indexOf(target);
