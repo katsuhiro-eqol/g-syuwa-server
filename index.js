@@ -135,9 +135,13 @@ io.on("connection", (socket) => {
 		io.to(data.service).emit("deafEntered", data);
 	});
 
-	//add 3/6
+	//add 3/6 deafからinterpreterに届く
 	socket.on("offerInterpreter", (data) => {
 		io.to(data.interpreter).emit("offering", data)
+	})
+	//add 3/6 interpreterからserviceに届く
+	socket.on("acceptOffer", (data) => {
+		io.to(data.service).emit("acceptOffer", data);
 	})
 
 	socket.on("flipAvailability", (data) => {
