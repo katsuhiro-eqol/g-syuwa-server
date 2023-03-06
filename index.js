@@ -143,7 +143,6 @@ io.on("connection", (socket) => {
         const avail = target['available'];
         target['available'] = !avail;
         currentUsers.push(target);
-        console.log(currentUsers);
 	})
 });
 
