@@ -65,9 +65,9 @@ io.on("connection", (socket) => {
 
     });
 
-	socket.on("callUser1", ({ userToCall, signalData, from, name, deaf }) => {
-		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, deaf });
-		console.log('deaf:', deaf);
+	socket.on("callUser1", ({ userToCall, signalData, from, name, customer }) => {
+		io.to(userToCall).emit("callUser1", { signal: signalData, from, name, customer });
+		console.log('service:', from);
 	});
 	socket.on("callUser2", ({ userToCall, signalData, from, name }) => {
 		io.to(userToCall).emit("callUser2", { signal: signalData, from, name });
@@ -131,8 +131,8 @@ io.on("connection", (socket) => {
 		io.to(data.room).emit("comment", data);
 	});
 
-	socket.on("deafEnter", (data) =>{
-		io.to(data.service).emit("deafEntered", data);
+	socket.on("customerEnter", (data) =>{
+		io.to(data.service).emit("customerEntered", data);
 	});
 
 	//add 3/6 deafからinterpreterに届く
