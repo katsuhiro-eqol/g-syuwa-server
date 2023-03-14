@@ -135,13 +135,18 @@ io.on("connection", (socket) => {
 		io.to(data.service).emit("customerEntered", data);
 	});
 
-	//add 3/6 deafからinterpreterに届く
+	//add 3/6 customerからinterpreterに届く
 	socket.on("offerInterpreter", (data) => {
 		io.to(data.interpreter).emit("offering", data)
 	})
-	//add 3/6 interpreterからserviceに届く
+	//add 3/6 interpreterからcustomerに届く
 	socket.on("acceptOffer", (data) => {
-		io.to(data.service).emit("acceptOffer", data);
+		io.to(data.customer).emit("acceptOffer", data);
+	})
+
+	//add 3/14
+	socket.on("cancelOffer", (data) => {
+		io.to(data).emit("cancelOffer");
 	})
 
 	socket.on("flipAvailability", (data) => {
