@@ -38,6 +38,7 @@ io.on("connection", (socket) => {
         currentUsers = currentUsers.filter((item) => item.socketId !== socket.id);
 		console.log('currentUsers: ',currentUsers);
 		//add 2/3 site/deafがdisconnectしたとき、offer先をdisusedする
+		/*
 		console.log('offeringConnections[socket.id]: ', offeringConnections[socket.id])
 
 		if (socket.id in offeringConnections){
@@ -50,6 +51,7 @@ io.on("connection", (socket) => {
 		if (socket.id in offeringConnections){
 			delete offeringConnections[socket.id];
 		}
+		*/
 	});
 
     socket.on('sharingUserInfo', (data) => {
@@ -62,7 +64,6 @@ io.on("connection", (socket) => {
 			currentUsers.push(data);
 			console.log('currentUser', currentUsers)
 		}
-
     });
 
 	socket.on("callUser1", ({ userToCall, signalData, from, name, customer }) => {
@@ -76,12 +77,15 @@ io.on("connection", (socket) => {
 		io.to(userToCall).emit("callUser3", { signal: signalData, from, name });
 	});
 
+	/*
 	socket.on("offeredInfo", (data) => {
 		offeringConnections[data.site] = data.interpreters;
 	});
+	*/
 
 	socket.on("answerCall1", (data) => {
 		io.to(data.to).emit("callAccepted1", data.signal);
+		/*
 		console.log('offeringConnections', offeringConnections);
 		if (data.to in offeringConnections){
 			const interpreters = offeringConnections[data.to];
@@ -93,6 +97,7 @@ io.on("connection", (socket) => {
 				})
 			}
 		}
+		*/
 	});
 
 	socket.on("answerCall2", (data) => {
@@ -126,6 +131,7 @@ io.on("connection", (socket) => {
 		console.log("enter room: ", data.from);
 		console.log("roomNo: ", data.room);
 	});
+
 	socket.on("comment", (data) => {
 		console.log(data);
 		io.to(data.room).emit("comment", data);
@@ -133,7 +139,6 @@ io.on("connection", (socket) => {
 
 	socket.on("customerEnter", (data) =>{
 		io.to(data.service).emit("customerEntered", data);
-		io.to(data.customer).emit("customerEnteredToCustomer", data);
 	});
 
 	//add 3/6 customerからinterpreterに届く
