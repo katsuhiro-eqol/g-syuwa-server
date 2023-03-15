@@ -133,11 +133,12 @@ io.on("connection", (socket) => {
 
 	socket.on("customerEnter", (data) =>{
 		io.to(data.service).emit("customerEntered", data);
+		io.to(data.customer).emit("customerEnteredToCustomer", data);
 	});
 
 	//add 3/6 customerからinterpreterに届く
 	socket.on("offerInterpreter", (data) => {
-		io.to(data.interpreter).emit("offering", data)
+		io.to(data.interpreter).emit("offering", data);
 	})
 	//add 3/6 interpreterからcustomerに届く
 	socket.on("acceptOffer", (data) => {
