@@ -66,8 +66,8 @@ io.on("connection", (socket) => {
 		}
     });
 
-	socket.on("callUser1", (data) => {
-		io.to(data.userToCall).emit("callUser1", data);
+	socket.on("callUser1", ({userToCall, signalData, from, name, userInfo}) => {
+		io.to(userToCall).emit("callUser1", {signalData, from, name, userInfo});
 		console.log('service:', from);
 	});
 	socket.on("callUser2", ({ userToCall, signalData, from, name }) => {
